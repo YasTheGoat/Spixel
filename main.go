@@ -15,12 +15,13 @@ import (
 )
 
 type Spy struct {
-	Id     uuid.UUID
-	Active bool
-	Read   bool
-	Time   time.Time
-	IP     string
-	Name   string
+	Id         uuid.UUID
+	Active     bool
+	Read       bool
+	Time       time.Time
+	IP         string
+	Name       string
+	UserAgents string
 }
 
 var targets map[string]Spy = make(map[string]Spy)
@@ -38,12 +39,13 @@ func main() {
 		if ok {
 			if val.Active {
 				targets[id] = Spy{
-					Id:     val.Id,
-					Active: false,
-					Read:   true,
-					Time:   time.Now(),
-					IP:     ReadUserIP(r),
-					Name:   val.Name,
+					Id:         val.Id,
+					Active:     false,
+					Read:       true,
+					Time:       time.Now(),
+					IP:         ReadUserIP(r),
+					Name:       val.Name,
+					UserAgents: r.UserAgent(),
 				}
 
 				SaveToFile()
@@ -64,7 +66,6 @@ func main() {
 }
 
 func CLI() {
-
 	for {
 		fmt.Println("What do you want to do ?")
 		fmt.Println("1. List active targets")
@@ -89,7 +90,8 @@ func CLI() {
 			for _, value := range targets {
 				if value.Active {
 					count++
-					fmt.Println(count, ". ID:", value.Id, " Name:", value.Name, " Active:", value.Active)
+					DisplayTarget(count, value)
+
 				}
 			}
 			if count == 0 {
@@ -100,7 +102,7 @@ func CLI() {
 			for _, value := range targets {
 				if value.Read {
 					count++
-					fmt.Println(count, ". ID:", value.Id, " IP:", value.IP, " Name:", value.Name, " Active:", value.Active, " Read:", value.Read, " Time:", value.Time)
+					DisplayTarget(count, value)
 				}
 			}
 			if count == 0 {
@@ -110,7 +112,7 @@ func CLI() {
 			count := 0
 			for _, value := range targets {
 				count++
-				fmt.Println(count, ". ID:", value.Id, " IP:", value.IP, " Name:", value.Name, " Active:", value.Active, " Read:", value.Read, " Time:", value.Time)
+				DisplayTarget(count, value)
 			}
 			if count == 0 {
 				fmt.Println("No target found")
@@ -198,8 +200,12 @@ func ReadFromFile() {
 	d := gob.NewDecoder(b)
 
 	if err := d.Decode(&targets); err != nil {
-		fmt.Println("Failed to retrive saved data")
+		fmt.Println("Failed to retrieve saved data")
 		return
 	}
+}
 
+func DisplayTarget(nbr int, spy Spy) {
+
+	fmt.Println(nbr, ". ID:", spy.Id, " Name:", spy.Name, " IP:", spy.IP, " User-Agents:", spy.UserAgents, " Active:", spy.Active, " Read:", spy.Read, " Time:", spy.Time.Format("2015-12-20"))
 }
