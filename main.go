@@ -185,6 +185,7 @@ func SaveToFile() {
 	}
 
 	file.Write(b.Bytes())
+	file.Close()
 }
 
 func ReadFromFile() {
