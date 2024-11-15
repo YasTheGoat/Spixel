@@ -23,7 +23,7 @@ type Spy struct {
 	Name   string
 }
 
-var targets map[string]Spy
+var targets map[string]Spy = make(map[string]Spy)
 
 func main() {
 
@@ -100,7 +100,7 @@ func CLI() {
 			for _, value := range targets {
 				if value.Read {
 					count++
-					fmt.Println(count, ". ID:", value.Id, " Name:", value.Name, " Active:", value.Active, " Read:", value.Read, " Time:", value.Time)
+					fmt.Println(count, ". ID:", value.Id, " IP:", value.IP, " Name:", value.Name, " Active:", value.Active, " Read:", value.Read, " Time:", value.Time)
 				}
 			}
 			if count == 0 {
@@ -110,7 +110,7 @@ func CLI() {
 			count := 0
 			for _, value := range targets {
 				count++
-				fmt.Println(count, ". ID:", value.Id, " Name:", value.Name, " Active:", value.Active, " Read:", value.Read, " Time:", value.Time)
+				fmt.Println(count, ". ID:", value.Id, " IP:", value.IP, " Name:", value.Name, " Active:", value.Active, " Read:", value.Read, " Time:", value.Time)
 			}
 			if count == 0 {
 				fmt.Println("No target found")
